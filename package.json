@@ -4,6 +4,9 @@
   "description": "Controller software for the home automation project",
   "author": "Mattias Runge <mattias@runge.se>, Björn Ramberg <bjorne@gah.se>",
   "repository": { "type": "git", "url": "git://github.com/mattiasrunge/atom.js.git" },
+  "dependencies": {
+    "xml2json": "~0.2.4"
+  },
   "devDependencies": {
     "mocha": "~1.1.0",
     "should": "~0.6.3"
