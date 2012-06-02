@@ -1,0 +1,10 @@
+{
+  "name": "atom.js",
+  "description": "Controller software for the home automation project",
+  "author": "Mattias Runge <mattias@runge.se>, Björn Ramberg <bjorne@gah.se>",
+  "dependencies": {
+  },
+  "engine": "node ~0.6.6",
+  "main": "index.js",
+  "license": "GPLv2"
+}
