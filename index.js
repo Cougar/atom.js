@@ -1,0 +1,1 @@
+var atom = require('./lib/atom');
