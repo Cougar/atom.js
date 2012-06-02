@@ -1,4 +1,4 @@
 atom.js
 =======
 
-Controller software for the home automation project projekt.auml.se based on node.js
+Controller software for the [projekt.auml.se](home automation project) based on Node.js.
