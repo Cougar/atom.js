@@ -5,6 +5,9 @@ var server = new atom.Atom({
   monitor: {
     port: 1201
   },
+  command: {
+    tcpPort: 1202
+  },
   udp: [
     {
       address: '192.168.1.250',

@@ -1,0 +1,4 @@
+[Project]
+Name=atom.js
+Manager=KDevCMakeManager
+VersionControl=kdevgit
