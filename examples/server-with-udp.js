@@ -10,6 +10,11 @@ var server = new atom.Atom({
       address: '192.168.1.250',
       port: 1100
     }
+  ],
+  legacy: [
+    {
+      port: 1200
+    }
   ]
 });
 
