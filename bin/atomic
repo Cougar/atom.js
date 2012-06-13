@@ -1,0 +1,139 @@
+#!/usr/bin/env node
+
+var net = require('net'),
+    util = require('util'),
+    readline = require('readline'),
+    stdin = process.stdin,
+    stdout = process.stdout;
+
+function Atomic(port, host) {
+  console.log('Atomic started');
+  var self = this;
+  this.prompt = 'atomic> ';
+  this.availableCommands = [];
+  this.client = net.connect(port, host, function() {
+    console.log('Connected to', host + ':' + port + '.');
+    self.updatePrompt();
+    self.bindClientEvents();
+    self.setupPrompt();
+  });
+  this.commands = [];
+
+  process.on('SIGINT', function() {
+    console.log('Exiting.');
+    process.exit(0);
+  });
+
+  stdin.on('end', function() {
+    console.log('end');
+  });
+}
+
+Atomic.prototype.setupPrompt = function() {
+  var self = this;
+  this.readline = readline.createInterface(stdin, stdout, function(substring) {
+    var matches = self.availableCommands.filter(function(cmd) {
+        return cmd.toLowerCase().substring(0, substring.length) === substring.toLowerCase();
+    });
+    return [matches, substring];
+  });
+  this.fetchCommandList();
+  this.readline.setPrompt(this.prompt, this.prompt.length);
+  this.readline.on('line', function(line) {
+    line = line.toString();
+    var parts = line.replace(/\n/, '').split(' ');
+    var command = parts.slice(0, 1);
+    var params = parts.slice(1, 999);
+    self.sendCommand(command, params, function(data, commandData) {
+      stdout.write(util.inspect(data.result) + '\n');
+      self.updatePrompt();
+    });
+  });
+  this.readline.on('close', function() {
+    console.log('\nExiting.');
+    process.exit(0);
+  });
+  this.readline.prompt();
+};
+
+Atomic.prototype.fetchCommandList = function() {
+  var self = this;
+  this.sendCommand('CommandIO.listCommands', function(data) {
+    self.availableCommands = data.result;
+  });
+};
+
+Atomic.prototype.bindClientEvents = function() {
+  var self = this;
+  this.client.on('data', function(data) {
+    var lines = data.toString().split('\n');
+    lines.forEach(function(json) {
+      if (!json) {
+        return;
+      }
+      var data = JSON.parse(json);
+
+      if (data.error) {
+        self.readline.pause();
+        stdout.write('ERR ' + data.error.code + ': ' + data.message + '\n');
+        self.readline.resume();
+        self.readline.prompt();
+        return;
+      }
+
+      if (typeof data.id === 'number') {
+        var command = self.commands[data.id];
+        command.callback(data, command.data);
+      } else {
+        self.handleNotification(data);
+      }
+    });
+  });
+};
+
+Atomic.prototype.handleNotification = function(data) {
+  console.log('Got notification', data);
+};
+
+Atomic.prototype.getNextId = function() {
+  return this.commands.length;
+};
+
+Atomic.prototype.sendCommand = function(method, paramsOrCallback, callback) {
+  var params;
+  if (typeof callback === 'undefined') {
+    callback = paramsOrCallback;
+  } else {
+    params = paramsOrCallback;
+  }
+  var id = this.getNextId();
+  var data = {
+    jsonrpc: "2.0",
+    method: method,
+    id: id
+  };
+  if (params) {
+    data.params = params;
+  }
+  this.commands.push({
+    data: data,
+    callback: callback
+  });
+  this.client.write(JSON.stringify(data) + '\n');
+};
+
+Atomic.prototype.updatePrompt = function() {
+  var self = this;
+  this.sendCommand('Interactive.promptGet', function(data) {
+    self.prompt = data.result.prompt;
+    self.readline.setPrompt(self.prompt);
+    self.readline.prompt();
+  });
+};
+
+var args = process.argv;
+
+var port = args[2] || 1202;
+var host = args[3] || 'localhost';
+
+var atomic = new Atomic(port, host);
