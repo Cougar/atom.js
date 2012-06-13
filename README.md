@@ -9,6 +9,10 @@ Edit examples/server-with-udp.js for you setup then start with
 
     $ node examples/server-with-udp.js
 
+You can run the atomic client by running
+
+    $ ./bin/atomic [port] [host]
+
 ## Developer notes
 
 ### Setup
