@@ -1,1 +1,5 @@
 /node_modules
+/protocol.json
+*~
+CMakeLists.txt
+atom.js.kde4
