@@ -5,7 +5,8 @@
   "author": "Mattias Runge <mattias@runge.se>, Björn Ramberg <bjorne@gah.se>",
   "repository": { "type": "git", "url": "git://github.com/mattiasrunge/atom.js.git" },
   "dependencies": {
-    "xml2json": "~0.2.4"
+    "xml2json": "~0.2.4",
+    "ansi-color": "~0.2.1"
   },
   "devDependencies": {
     "mocha": "~1.1.0",

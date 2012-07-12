@@ -3,6 +3,7 @@
 var net = require('net'),
     util = require('util'),
     readline = require('readline'),
+    color = require('ansi-color').set,
     stdin = process.stdin,
     stdout = process.stdout;
 
@@ -38,7 +39,7 @@ Atomic.prototype.setupPrompt = function() {
     return [matches, substring];
   });
   this.fetchCommandList();
-  this.readline.setPrompt(this.prompt, this.prompt.length);
+  this.readline.setPrompt(color(this.prompt, 'green'), this.prompt.length);
   this.readline.on('line', function(line) {
     line = line.toString();
     var parts = line.replace(/\n/, '').split(' ');
@@ -126,7 +127,7 @@ Atomic.prototype.updatePrompt = function() {
   var self = this;
   this.sendCommand('Interactive.promptGet', function(data) {
     self.prompt = data.result.prompt;
-    self.readline.setPrompt(self.prompt);
+    self.readline.setPrompt(color(self.prompt, 'green'), self.prompt.length);
     self.readline.prompt();
   });
 };
