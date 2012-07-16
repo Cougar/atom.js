@@ -46,7 +46,7 @@ Atomic.prototype.setupPrompt = function() {
     var command = parts.slice(0, 1);
     var params = parts.slice(1, 999);
     self.sendCommand(command, params, function(data, commandData) {
-      stdout.write(util.inspect(data.result) + '\n');
+      stdout.write(util.inspect(data.result, false, 4) + '\n');
       self.updatePrompt();
     });
   });
