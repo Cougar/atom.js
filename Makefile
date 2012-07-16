@@ -1,4 +1,4 @@
-TESTS = $(shell find test -name "test_*.js" -type f | sort)
+TESTS = $(shell find test -name "*_test.js" -type f | sort)
 SRC = $(shell find lib -name "*.js" -type f | sort)
 
 test:

@@ -1,4 +1,4 @@
-require('../../helper.js');
+require('../../test_helper.js');
 
 var Node = require('../../../lib/atom/network/node').Node;
 
