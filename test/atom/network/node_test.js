@@ -2,6 +2,8 @@ require('../../test_helper.js');
 
 var Node = require('../../../lib/atom/network/node').Node;
 
+var module = require('../../../lib/atom/network/module');
+
 describe('Node', function() {
   beforeEach(function() {
     this.network = {
@@ -101,6 +103,16 @@ describe('Node', function() {
       it('triggers list_done', function(done) {
         this.node.stateMachine.on({ event: 'list_done' }, function() {
           done();
+        });
+        sendListResponse.call(this);
+      });
+
+      it('emits new modules', function(done) {
+        this.node.on('module.connect', function(module) {
+          module.moduleTypeName.should.eql('Debug');
+          if (module.moduleId === 56) {
+            done();            
+          }
         });
         sendListResponse.call(this);
       });
