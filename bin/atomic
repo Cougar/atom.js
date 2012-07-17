@@ -45,10 +45,14 @@ Atomic.prototype.setupPrompt = function() {
     var parts = line.replace(/\n/, '').split(' ');
     var command = parts.slice(0, 1);
     var params = parts.slice(1, 999);
-    self.sendCommand(command, params, function(data, commandData) {
-      stdout.write(util.inspect(data.result, false, 4) + '\n');
+    if (command.toString()) {
+      self.sendCommand(command, params, function(data, commandData) {
+        stdout.write(util.inspect(data.result, false, 4) + '\n');
+        self.updatePrompt();
+      });
+    } else {
       self.updatePrompt();
-    });
+    }
   });
   this.readline.on('close', function() {
     console.log('\nExiting.');
