@@ -1,1 +1,1 @@
-var atom = require('./lib/atom');
+module.exports = require('./lib/atom');
